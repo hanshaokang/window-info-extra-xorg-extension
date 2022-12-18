@@ -103,6 +103,8 @@ static int proc_wi_window_pid(ClientPtr client) {
         rep.data.windowPid.argsLen = strlen(args) + 1;
     }
 
+    rep.length = bytes_to_int32((int) (rep.data.windowPid.cmdLen + rep.data.windowPid.argsLen));
+
     if (client->swapped) {
         swaps(&rep.sequenceNumber);
         swapl(&rep.length);

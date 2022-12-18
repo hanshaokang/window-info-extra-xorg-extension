@@ -5,6 +5,7 @@
 #ifndef WINDOW_INFO_EXTRA_XORG_EXTENSION_PROTO_H
 #define WINDOW_INFO_EXTRA_XORG_EXTENSION_PROTO_H
 
+#include <X11/Xmd.h>
 #define WI_EXT_NAME "WI-EXTRA"
 
 #define WI_MAJOR_VERSION 1
@@ -26,7 +27,8 @@ typedef struct {
 } xWIReq;
 
 typedef struct {
-    CARD16 pad B16;
+    CARD8 reqType;
+    CARD8 xWIReqType;
     CARD16 length B16;
     CARD32 majorVersion B32;
     CARD32 minorVersion B32;
@@ -35,7 +37,8 @@ typedef struct {
 #define sz_xWIVersionReq   12
 
 typedef struct {
-    CARD16 pad B16;
+    CARD8 reqType;
+    CARD8 xWIReqType;
     CARD16 length B16;
     CARD32 windowId B32;
 } xWIWindowPidReq;

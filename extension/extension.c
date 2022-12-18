@@ -16,7 +16,7 @@
 
 
 static int proc_wi_version(ClientPtr client) {
-    REQUEST(xWIVersionReq)
+    REQUEST(xWIVersionReq);
     REQUEST_SIZE_MATCH(xWIVersionReq);
 
     REPLY(xWIReply, X_WIVersion)
@@ -47,7 +47,7 @@ static int proc_wi_version(ClientPtr client) {
 }
 
 static int s_proc_wi_version(ClientPtr client) {
-    REQUEST(xWIVersionReq)
+    REQUEST(xWIVersionReq);
     REQUEST_SIZE_MATCH(xWIVersionReq);
 
     swaps(&stuff->length);
@@ -57,7 +57,7 @@ static int s_proc_wi_version(ClientPtr client) {
 }
 
 static int proc_wi_window_pid(ClientPtr client) {
-    REQUEST(xWIWindowPidReq)
+    REQUEST(xWIWindowPidReq);
     REQUEST_SIZE_MATCH(xWIWindowPidReq);
 
     REPLY(xWIReply, X_WIWindowPid)
@@ -125,7 +125,7 @@ static int proc_wi_window_pid(ClientPtr client) {
 }
 
 static int s_proc_wi_window_pid(ClientPtr client) {
-    REQUEST(xWIWindowPidReq)
+    REQUEST(xWIWindowPidReq);
     REQUEST_SIZE_MATCH(xWIWindowPidReq);
 
     swaps(&stuff->length);
@@ -134,7 +134,7 @@ static int s_proc_wi_window_pid(ClientPtr client) {
 }
 
 static int proc_wi_dispatch(ClientPtr client) {
-    REQUEST(xWIReq)
+    REQUEST(xWIReq);
     switch (stuff->xWIReqType) {
         case X_WIVersion:
             return proc_wi_version(client);
@@ -146,7 +146,7 @@ static int proc_wi_dispatch(ClientPtr client) {
 }
 
 static int _X_COLD s_proc_wi_dispatch(ClientPtr client) {
-    REQUEST(xWIReq)
+    REQUEST(xWIReq);
     switch (stuff->xWIReqType) {
         case X_WIVersion:
             return s_proc_wi_version(client);

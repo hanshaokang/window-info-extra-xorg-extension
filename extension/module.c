@@ -34,7 +34,7 @@ static ExtensionModule wi_ext = {
 
 static MODULESETUPPROTO(wi_setup);
 
-_X_EXPORT XF86ModuleData wi_extraModuleData = {
+_X_EXPORT XF86ModuleData wiextraModuleData = {
         &wi_ver,
         wi_setup,
         NULL,

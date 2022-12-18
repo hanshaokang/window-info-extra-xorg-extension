@@ -14,3 +14,8 @@ target_link_libraries(${LIBRARY_NAME} PRIVATE
         PkgConfig::pixman
         common
         )
+
+target_compile_definitions(
+        ${LIBRARY_NAME} PRIVATE
+        _XSERVER64          # 一定要定义这个，否则会导致数据结构不一致
+)

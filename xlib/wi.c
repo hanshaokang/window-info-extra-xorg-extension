@@ -44,10 +44,16 @@ _X_EXPORT int WIQueryWindowPid(
         }
 
         CARD32 extLength = rep.length;
-        if (windowPid) {
-            *windowPid = (pid_t) rep.data.windowPid.pid;
-        }
         do {
+            if (rep.data.windowPid.error != Success) {
+                ret = (int) rep.data.windowPid.error;
+                break;
+            }
+
+            if (windowPid) {
+                *windowPid = (pid_t) rep.data.windowPid.pid;
+            }
+
             CARD32 cmdLen = rep.data.windowPid.cmdLen;
             CARD32 argsLen = rep.data.windowPid.argsLen;
             CARD32 total = cmdLen + argsLen;
@@ -56,23 +62,28 @@ _X_EXPORT int WIQueryWindowPid(
                 break;
             }
 
-            if (cmdLen != 0) {
-                char *cmdStr = calloc(1, cmdLen);
-                _XReadPad(dpy, cmdStr, cmdLen);
-                if (cmd != NULL) {
-                    *cmd = cmdStr;
+            char *data = (char *) calloc(1, rep.length << 2);
+            if (!data) {
+                break;
+            }
+            _XReadPad(dpy, data, rep.length << 2);
+            extLength = 0;
+
+            if (cmd != NULL) {
+                *cmd = calloc(1, cmdLen);
+                if (*cmd) {
+                    memcpy(*cmd, data, cmdLen - 1);
                 }
             }
 
-            if (argsLen != 0) {
-                char *argsStr = calloc(1, cmdLen);
-                _XReadPad(dpy, argsStr, argsLen);
-                if (args != NULL) {
-                    *args = argsStr;
+            if (args != NULL) {
+                *args = calloc(1, argsLen);
+                if (*args) {
+                    memcpy(*args, data + cmdLen, argsLen - 1);
                 }
             }
 
-            extLength -= ((total + 3) >> 2);
+            free(data);
             ret = Success;
         } while (xFalse);
 

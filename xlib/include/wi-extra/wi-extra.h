@@ -4,11 +4,13 @@
 
 #ifndef WINDOW_INFO_EXTRA_XORG_EXTENSION_WI_EXTRA_H
 #define WINDOW_INFO_EXTRA_XORG_EXTENSION_WI_EXTRA_H
+
 #include <wi-extra/define.h>
 #include <X11/Xlib.h>
 
+_XFUNCPROTOBEGIN
 _X_EXPORT int WIQueryExtension(
-        IN Display *dpy ,
+        IN Display *dpy,
         OUT int *event_base_return,
         OUT int *error_base_return);
 
@@ -23,4 +25,6 @@ _X_EXPORT int WIQueryWindowPid(
         OUT pid_t *windowPid,
         OUT char **cmd,
         OUT char **args);
+
+_XFUNCPROTOEND
 #endif //WINDOW_INFO_EXTRA_XORG_EXTENSION_WI_EXTRA_H

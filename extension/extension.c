@@ -94,16 +94,21 @@ static int proc_wi_window_pid(ClientPtr client) {
         rep.data.windowPid.pid = GetClientPid(targetClient);
         cmd = GetClientCmdName(targetClient);
         args = GetClientCmdArgs(targetClient);
+        rep.data.windowPid.error = Success;
     } while (FALSE);
 
+    CARD32 cmdLen = 0;
     if (cmd) {
-        rep.data.windowPid.cmdLen = strlen(cmd) + 1;
+        cmdLen = strlen(cmd) + 1;
+        rep.data.windowPid.cmdLen = cmdLen;
     }
+    CARD32 argsLen = 0;
     if (args) {
-        rep.data.windowPid.argsLen = strlen(args) + 1;
+        argsLen = strlen(args) + 1;
+        rep.data.windowPid.argsLen = argsLen;
     }
 
-    rep.length = bytes_to_int32((int) (rep.data.windowPid.cmdLen + rep.data.windowPid.argsLen));
+    rep.length = bytes_to_int32((int) (cmdLen + argsLen));
 
     if (client->swapped) {
         swaps(&rep.sequenceNumber);
@@ -114,13 +119,24 @@ static int proc_wi_window_pid(ClientPtr client) {
         swapl(&rep.data.windowPid.argsLen);
     }
 
-    WriteToClient(client, sizeof(xWIReply), &rep);
+    char *data = (char *) calloc(1, rep.length << 2);
+
+    if (!data) {
+        return BadAlloc;
+    }
+
     if (cmd) {
-        WriteToClient(client, (int) rep.data.windowPid.cmdLen, cmd);
+        memcpy(data, cmd, cmdLen);
     }
+
     if (args) {
-        WriteToClient(client, (int) rep.data.windowPid.cmdLen, args);
+        memcpy(data + cmdLen, args, argsLen);
     }
+
+    WriteToClient(client, sizeof(xWIReply), &rep);
+    WriteToClient(client, (int) rep.length << 2, data);
+    free(data);
+
     return Success;
 }
 
@@ -145,15 +161,20 @@ static int proc_wi_dispatch(ClientPtr client) {
     }
 }
 
-static int _X_COLD s_proc_wi_dispatch(ClientPtr client) {
+static int _X_COLD
+s_proc_wi_dispatch(ClientPtr
+                   client) {
     REQUEST(xWIReq);
     switch (stuff->xWIReqType) {
         case X_WIVersion:
-            return s_proc_wi_version(client);
+            return
+                    s_proc_wi_version(client);
         case X_WIWindowPid:
-            return s_proc_wi_window_pid(client);
+            return
+                    s_proc_wi_window_pid(client);
         default:
-            return BadRequest;
+            return
+                    BadRequest;
     }
 }
 
